@@ -23,7 +23,6 @@ def cozmo_program(robot: cozmo.robot.Robot):
             # Convert the Cozmo camera image to a format that OpenCV can work with
             image = np.asarray(latestImage.raw_image)
             imageCV2 = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
             # Perform QR code detection using pyzbar
             decodedObjects = decode(imageCV2)
             for obj in decodedObjects:
@@ -38,9 +37,14 @@ def cozmo_program(robot: cozmo.robot.Robot):
                     value = int(cardInfo[2])
                     currentScore = currentScore + value
                     robot.say_text("It is a " + name + " of " + suit).wait_for_completed()
-                    robot.say_text("My hand value is " + str(currentScore)).wait_for_completed() 
                     if name =="Ace":
                         aceCount = aceCount + 1
+                    if aceCount > 0:
+                        robot.say_text("My hand value is " + str(currentScore) + " or " + str(currentScore + 10)).wait_for_completed()
+                    if aceCount == 0:
+                        robot.say_text("My hand value is " + str(currentScore)).wait_for_completed()
+                         
+                    
                     if currentScore > 21:
                         robot.say_text("Oh no, my hand is busted!").wait_for_completed()
                         """ robot.say_text("My current hand is" + str(currentScore) + " points from").wait_for_completed()
